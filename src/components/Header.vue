@@ -39,114 +39,113 @@
         <div class="md-content">
           <div class="confirm-tips">
             <div class="error-wrap">
-              <span class="error error-show" v-show="errorTip">用户名或者密码错误</span>
+              <span class="error error-show" v-show="errorTip">用户名或者密码错误1</span>
             </div>
             <ul>
               <li class="regi_form_input">
                 <i class="icon IconPeople"></i>
                 <input v-model="userName" type="text" tabindex="1" name="loginname" placeholder="User Name" data-type="loginname" class="regi_login_input regi_login_input_left">
               </li>
-                <li class="regi_form_input noMargin">
-                  <i class="icon IconPwd"></i>
-                  <input @keyup.enter="login" v-model="userPwd" type="password" tabindex="2" name="password" placeholder="Password" class="regi_login_input regi_login_input_left login-input-no input_text">
-                </li>
-                </ul>
-              </div>
-              <div class="login-wrap">
-                <a href="javascript:;" class="btn-login" @click="login">登  录</a>
-              </div>
-            </div>
+              <li class="regi_form_input noMargin">
+                <i class="icon IconPwd"></i>
+                <input @keyup.enter="login" v-model="userPwd" type="password" tabindex="2" name="password" placeholder="Password" class="regi_login_input regi_login_input_left login-input-no input_text">
+              </li>
+            </ul>
+          </div>
+          <div class="login-wrap">
+            <a href="javascript:;" class="btn-login" @click="login">登 录</a>
           </div>
         </div>
-        <div class="md-overlay" v-show="loginModalFlag" @click='loginPopStatus(0)'></div>
+      </div>
+    </div>
+    <div class="md-overlay" v-show="loginModalFlag" @click='loginPopStatus(0)'></div>
   </header>
 </template>
 
 <script>
 
- import axios from 'axios'
- import { mapState } from 'vuex'
-  export default{
-     data(){
-       return {
-          userName:'',    //用户名
-          userPwd:'',     //密码
-          errorTip:false,
-          loginModalFlag:false,
-       }
-     },
-     computed:{
-       ...mapState(['nickName','cartCount'])
-      //  nickName(){
-      //    return this.$store.state.nickName;
-      //  },
-      //  cartCount(){
-      //    return this.$store.state.cartCount;
-      //  }
-     },
-     mounted(){
-       this.checkLogin();
-     },
-     methods:{
-       checkLogin(){
-         axios.get("/users/checkLogin").then((response)=>{
-           let res = response.data;
-           if(res.status=='0'){
-             this.$store.commit("updateUserInfo",res.result.userName);
-             this.getCartCount();
-           }
-         })
-       },
-       login(){
-         if(!this.userName||!this.userPwd){
-           this.errorTip = true;
-           return;
-         }
-         axios.post("/users/login",{
-           userName:this.userName,
-           userPwd:this.userPwd
-         }).then((response)=>{
-           let res = response.data;
-           if(res.status==0){
-             this.errorTip = false;
-             this.loginModalFlag = false;
-             this.getCartCount();
-             this.$store.commit("updateUserInfo",res.result.userName);
-           }else{
-             this.errorTip = true;
-           }
-         })
-       },
-       loginPopStatus(status){
-         if(status==1){
-           this.loginModalFlag = true;
-         }
-         if(status==0){
-           this.loginModalFlag = false;
-         }
-       },
-       logout(){
-         axios.post("/users/logout").then((response)=>{
-           let res =response.data;
-           if(res.status==0){
-            this.$store.commit("updateUserInfo",'');
-           }
-         })
-       },
-       getCartCount(){
-         axios.get("/users/getCartCount").then((response)=>{
-           let res = response.data;
-           this.$store.commit("initCartCount",res.result)
-         })
-       }
-     }
+import axios from 'axios'
+import { mapState } from 'vuex'
+export default {
+  data() {
+    return {
+      userName: '',    //用户名
+      userPwd: '',     //密码
+      errorTip: false,
+      loginModalFlag: false,
+    }
+  },
+  computed: {
+    nickName() {
+      return this.$store.state.nickName;
+    },
+    cartCount() {
+      return this.$store.state.cartCount;
+    }
+  },
+  mounted() {
+    this.checkLogin();
+  },
+  methods: {
+    checkLogin() {
+      axios.get("/users/checkLogin").then((response) => {
+        let res = response.data;
+        if (res.status == '0') {
+          this.$store.commit("updateUserInfo", res.result.userName);
+          this.getCartCount();
+        }
+      })
+    },
+    login() {
+      if (!this.userName || !this.userPwd) {
+        this.errorTip = true;
+        return;
+      }
+      axios.post("/users/login", {
+        userName: this.userName,
+        userPwd: this.userPwd
+      }).then((response) => {
+        let res = response.data;
+        if (res.status == 0) {
+          this.errorTip = false;
+          this.loginModalFlag = false;
+          this.getCartCount();
+          this.$store.commit("updateUserInfo", res.result.userName);
+        } else {
+          this.errorTip = true;
+        }
+      })
+    },
+    loginPopStatus(status) {
+      if (status == 1) {
+        this.loginModalFlag = true;
+      }
+      if (status == 0) {
+        this.loginModalFlag = false;
+      }
+    },
+    logout() {
+      axios.post("/users/logout").then((response) => {
+        let res = response.data;
+        if (res.status == 0) {
+          this.$store.commit("updateUserInfo", '');
+        }
+      })
+    },
+    getCartCount() {
+      axios.get("/users/getCartCount").then((response) => {
+        let res = response.data;
+        this.$store.commit("initCartCount", res.result)
+      })
+    }
   }
+}
 </script>
 
 <style>
-.navbar-cart-count{
-    height: 20px;
-    line-height: 20px;
+.navbar-cart-count {
+  height: 20px;
+  line-height: 20px;
 }
 </style>
 
